@@ -27,18 +27,21 @@ func main() {
 	iamClient := iam.New(session)
 
 	//https://docs.aws.amazon.com/sdk-for-go/api/service/iam/#IAM.ListGroups
-
+	//List all the groups
 	lgOutput, err := iamClient.ListGroups(&iam.ListGroupsInput{})
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	for _, group := range lgOutput.Groups {
+		//List the attached policies per each group
 		lagpOutput, err := iamClient.ListAttachedGroupPolicies(&iam.ListAttachedGroupPoliciesInput{
 			GroupName: group.GroupName,
 		})
 		if err != nil {
 			log.Println(err)
 		}
+		// Loops through each attached policy
 		for _, policy := range lagpOutput.AttachedPolicies {
 			gpoutput, err := iamClient.GetPolicy(&iam.GetPolicyInput{
 				PolicyArn: policy.PolicyArn,
